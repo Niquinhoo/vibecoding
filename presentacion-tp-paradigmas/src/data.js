@@ -515,94 +515,190 @@ export const projectContent = {
     }
   },
 
-  "ManejoMenu.js": {
-    "descripcion": "La capa de presentación (UI) en consola. Este módulo traduce datos internos en una representación legible, funcionando como la vista del patrón MVC. Su rol es formatear, imprimir y estructurar la salida para el usuario.",
-    "paradigmas": {
-      "estructurada": {
-        "titulo": "Salida Secuencial e Imperativa",
-        "pasos": [
-          {
-            "id": 1,
-            "titulo": "Procedimientos Imperativos",
-            "descripcion": "El menú se imprime mediante una serie lineal de instrucciones. No retorna valores; solo ejecuta acciones. Es imperativo puro.",
-            "codigo": "export const displayMenu = () => {\n  console.clear();\n  console.log(\"==============================\");\n  console.log(\"   Gestor de Tareas (CLI)\");\n  console.log(\"==============================\");\n  console.log(\"1. Crear Tarea\");\n  console.log(\"2. Listar Tareas\");\n  console.log(\"0. Salir\");\n};",
-            "salida": "==============================\n   Gestor de Tareas (CLI)\n==============================\n1. Crear Tarea\n2. Listar Tareas\n0. Salir"
-          },
-          {
-            "id": 2,
-            "titulo": "Subrutinas Encadenadas",
-            "descripcion": "El menú principal deriva en funciones específicas según la opción elegida. Representa un flujo de control estructurado basado en funciones.",
-            "codigo": "// Ejemplo dentro del controlador principal\nif (opcion === 2) displayTaskList(tasks);",
-            "salida": "> Usuario ingresa: 2\n→ Ejecutando displayTaskList()...\n\nListado de tareas:\n1) Estudiar matemática\n2) Lavar ropa\n3) Pagar impuestos"
-          }
-        ]
-      },
-      "objetos": {
-        "titulo": "Mapeos Declarativos y Colaboración con el Modelo",
-        "pasos": [
-          {
-            "id": 1,
-            "titulo": "Diccionarios de Presentación",
-            "descripcion": "El módulo encapsula un mapa (objeto) que transforma la dificultad de la tarea en un ícono legible. Esto es una regla de presentación aislada del resto del sistema.",
-            "codigo": "const EMOJIS_DIFICULTAD = {\n  [DIFICULTADES.FACIL]: \"🟢 (Fácil)\",\n  [DIFICULTADES.MEDIA]: \"🟡 (Media)\",\n  [DIFICULTADES.DIFICIL]: \"🔴 (Difícil)\"\n};",
-            "salida": "> Tarea con dificultad: \"MEDIA\"\nEtiqueta mostrada: 🟡 (Media)"
-          },
-          {
-            "id": 2,
-            "titulo": "Colaboración con Objetos del Modelo",
-            "descripcion": "Las funciones de UI consultan métodos de las tareas en vez de implementar lógica propia. Esto sigue el principio de responsabilidad única.",
-            "codigo": "console.log(`  ¿Vencida?: ${task.estaVencida() ? \"Sí\" : \"No\"}`);",
-            "salida": "Tarea: \"Entregar trabajo práctico\"\nVencimiento: 2025-11-20\nHoy: 2025-11-25\n\n¿Vencida?: Sí"
-          }
-        ]
-      },
-      "funcional": {
-        "titulo": "Iteración Declarativa y Efectos Controlados",
-        "pasos": [
-          {
-            "id": 1,
-            "titulo": "Iteración Declarativa (forEach)",
-            "descripcion": "La lista de tareas se recorre con forEach, expresando una operación declarativa sobre cada elemento. No se construyen estructuras nuevas.",
-            "codigo": "tasks.forEach(task => displayTaskDetails(task));",
-            "salida": "> Usuario elige \"Listar tareas\"\n\n1) Estudiar\n   - Dificultad: 🟡 (Media)\n   - ¿Vencida?: No\n\n2) Ir al gimnasio\n   - Dificultad: 🟢 (Fácil)\n   - ¿Vencida?: No\n\n3) Renovar DNI\n   - Dificultad: 🔴 (Difícil)\n   - ¿Vencida?: Sí"
-          },
-          {
-            "id": 2,
-            "titulo": "Formateo Inmutable",
-            "descripcion": "La UI nunca modifica objetos; solo los lee y genera string de presentación. Sigue el enfoque funcional de no mutar datos.",
-            "codigo": "// Ejemplo de lectura sin modificación\ntask.creacion.toISOString();",
-            "salida": "Fecha de creación original: 2025-11-26T14:52:33.201Z\nRepresentado como: 2025-11-26T14:52:33.201Z (sin cambios)"
-          }
-        ]
-      },
-      "logica": {
-        "titulo": "Reglas, Guardas y Deducciones",
-        "pasos": [
-          {
-            "id": 1,
-            "titulo": "Guard Clauses",
-            "descripcion": "Antes de mostrar tareas, se valida si la lista está vacía. Si la condición no se cumple, se corta la ejecución.",
-            "codigo": "if (tasks.length === 0) {\n  console.log(\"No hay tareas para mostrar\");\n  return;\n}",
-            "salida": "> Usuario elige \"Listar tareas\"\nNo hay tareas para mostrar"
-          },
-          {
-            "id": 2,
-            "titulo": "Reglas Visuales como Inferencias",
-            "descripcion": "La vista deduce la representación a partir del estado de la tarea (e.g., dificultad → emoji). Es una inferencia directa: si X entonces Y.",
-            "codigo": "const label = EMOJIS_DIFICULTAD[dificultad] || dificultad;",
-            "salida": "Entrada: dificultad = \"DIFICIL\"\nSalida UI: 🔴 (Difícil)"
-          },
-          {
-            "id": 3,
-            "titulo": "Cálculo de Porcentajes",
-            "descripcion": "En la pantalla de estadísticas, la UI deduce porcentajes basados en los datos del núcleo. No crea datos nuevos, sino una representación derivada.",
-            "codigo": "console.log(` - ${estado}: ${data.cantidad} (${data.porcentaje}%)`);",
-            "salida": "Estadísticas:\n - Pendientes: 3 (50%)\n - En progreso: 1 (16%)\n - Completadas: 2 (33%)"
-          }
-        ]
-      }
+"ManejoInput.js": {
+  descripcion: "El controlador de entrada. Este módulo opera como interfaz entre el usuario y el sistema. Recibe cadenas escritas por el usuario mediante prompt-sync, valida, transforma y garantiza que la información que pasa al núcleo del programa sea estructuralmente correcta.",
+  paradigmas: {
+
+    // -------------------------------------------------------------------------
+    // PARADIGMA ESTRUCTURADA
+    // -------------------------------------------------------------------------
+    estructurada: {
+      titulo: "Captura Imperativa",
+      pasos: [
+        {
+          id: 1,
+          titulo: "Solicitud en Secuencia Determinada",
+          descripcion:
+            "El usuario completa una serie de pasos uno tras otro. El programa se detiene en cada input hasta recibir una respuesta válida. Esto refleja el paradigma imperativo clásico donde el flujo es lineal.",
+          codigo: `export const solicitarPropsCreacion = () => {
+                  console.clear();
+                  console.log("-- Crear nueva tarea --");
+
+                  const titulo = _solicitarStringNoVacio("Título: ");
+                  const descripcion = _solicitarStringOpcional("Descripción: ");
+                  const dificultad = solicitarDificultad("Dificultad: ");
+                  const vencimiento = solicitarVencimiento("Vencimiento (AAAA-MM-DD): ");
+
+                  return { titulo, descripcion, dificultad, vencimiento };
+                };`
+        },
+        {
+          id: 2,
+          titulo: "Estructuras de Control",
+          descripcion:
+            "Aparecen bucles claros (`while`, `do/while`) y condiciones (`if`, `switch`) que definen el flujo exacto del programa y evitan entradas inválidas.",
+          codigo: `let valor;
+                    do {
+                      valor = prompt("Ingrese título: ");
+                      if (!valor.trim()) {
+                        console.log("❌ No puede estar vacío.");
+                      }
+                    } while (!valor.trim());`
+        }
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // PARADIGMA ORIENTADO A OBJETOS
+    // -------------------------------------------------------------------------
+    objetos: {
+      titulo: "Wrappers, Helpers y Colaboración con Modelos",
+      pasos: [
+        {
+          id: 1,
+          titulo: "Encapsulación de la Biblioteca Externa",
+          descripcion:
+            "La librería prompt-sync no se usa directamente en el flujo principal. Se encapsula dentro de helpers privados como `_solicitarStringNoVacio`, asegurando que el resto del sistema no dependa de la librería.",
+          codigo: `import promptSync from 'prompt-sync';
+                    const prompt = promptSync({ sigint: true });
+
+                    // Nadie fuera de este módulo conoce 'prompt':
+                    export const _solicitarStringOpcional = (msg) => prompt(msg);`
+        },
+        {
+          id: 2,
+          titulo: "Colaboración con el Objeto Tarea",
+          descripcion:
+            "Las funciones leen o actualizan propiedades de un objeto `Tarea`. La lógica de negocio queda dentro de la clase, mientras que ManejoInput solo recolecta datos. Esto divide responsabilidades.",
+          codigo: `// solicitud de modificación
+                    export const solicitarPropsModificacion = (tarea) => {
+                      const nuevoTitulo = prompt(\`Título [\${tarea.titulo}]: \`);
+                      if (nuevoTitulo) tarea.titulo = nuevoTitulo;
+                      return tarea;
+                    };`
+        }
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // PARADIGMA FUNCIONAL
+    // -------------------------------------------------------------------------
+    funcional: {
+      titulo: "Entrada como Transformación Pura",
+      pasos: [
+        {
+          id: 1,
+          titulo: "Uso de Find/Filter para Selección",
+          descripcion:
+            "Se aplican funciones de orden superior como `find`, la cual recibe un predicado y retorna el primer elemento coincidente. No se alteran las listas.",
+          codigo: `export const seleccionarTareaDeLista = (lista, accion) => {
+                    const termino = prompt("Buscar: ");
+                    return lista.find(t => t.titulo.toLowerCase().includes(termino.toLowerCase()));
+                  };`
+        },
+        {
+          id: 2,
+          titulo: "Funciones como Validadores",
+          descripcion:
+            "Cada función de solicitud actúa como una transformación pura: recibe un input crudo y devuelve un valor validado, o null/undefined si falla.",
+          codigo: `const esFechaValida = (str) => /^\d{4}-\d{2}-\d{2}$/.test(str);
+
+                    export const solicitarVencimiento = () => {
+                      const input = prompt("Fecha: ");
+                      return esFechaValida(input) ? new Date(input) : undefined;
+                    };`
+        },
+        {
+          id: 3,
+          titulo: "Separación entre I/O e Inmutabilidad",
+          descripcion:
+            "Aunque prompt es una operación impura, la función retorna siempre datos nuevos sin modificar estructuras externas. Esto acerca este módulo a un estilo funcional parcialmente puro.",
+          codigo: `export const solicitarPropsCreacion = () => {
+                      return {
+                        titulo: _solicitarStringNoVacio("Título: "),
+                        descripcion: _solicitarStringOpcional("Descripción: "),
+                        dificultad: solicitarDificultad("Dificultad: ")
+                      };
+                    };`
+        }
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // PARADIGMA LÓGICO
+    // -------------------------------------------------------------------------
+    logica: {
+      titulo: "Validación y Reglas Formales",
+      pasos: [
+        {
+          id: 1,
+          titulo: "Predicados de Entrada",
+          descripcion:
+            "Cada verificación es una regla del tipo: 'la entrada es válida si se cumple P'. Este paradigma se basa en lógica de predicados: evaluar verdadero/falso.",
+          codigo: `if (valor.length > max) {
+                      console.log("❌ Error: demasiado largo");
+                      continue;
+                    }`
+        },
+        {
+          id: 2,
+          titulo: "Consistencia Temporal",
+          descripcion:
+            "Para las fechas se aplican reglas lógicas (no puede ser pasada, debe cumplir formato, debe ser real).",
+          codigo: `if (fechaInput < hoy) {
+                      console.log("❌ No puede ser pasada");
+                      continue;
+}`
+        },
+        {
+          id: 3,
+          titulo: "Normalización Semántica",
+          descripcion:
+            "Los inputs se transforman a una versión estándar antes de entrar al sistema (trim, lowercase, default values).",
+          codigo: `const termino = prompt("Buscar: ").trim().toLowerCase();`
+        }
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // PARADIGMA REACTIVO / UX (EXTRA)
+    // -------------------------------------------------------------------------
+    reactivo: {
+      titulo: "Feedback Inmediato",
+      pasos: [
+        {
+          id: 1,
+          titulo: "Mensajes de Error en Tiempo Real",
+          descripcion:
+            "Si el usuario ingresa algo inválido, el programa no continúa. Vuelve a pedir el dato inmediatamente y explica qué salió mal.",
+          codigo: `if (!regexFecha.test(fechaStr)) {
+                      console.log("❌ Formato AAAA-MM-DD requerido.");
+                      continue;
+                    }`
+        },
+        {
+          id: 2,
+          titulo: "Confirmaciones y Cancelaciones",
+          descripcion:
+            "La tecla Enter o Ctrl+C permiten abortar una acción completa. Esto le da al usuario un control suave sobre el flujo.",
+          codigo: `if (input === null || input === '') {
+                      return undefined; // Cancelar / omitir
+                    }`
+        }
+      ]
     }
-  },
+  }
+},
 
   "constantes.js": {
     "descripcion": "El diccionario central del sistema. Agrupa valores compartidos como estados, dificultades, configuraciones y expresiones estándar del dominio. Previene 'magic strings', mejora la mantenibilidad y asegura coherencia global.",
