@@ -514,46 +514,49 @@ export const projectContent = {
       }
     }
   },
-
 "ManejoInput.js": {
-  descripcion: "El controlador de entrada. Este módulo opera como interfaz entre el usuario y el sistema. Recibe cadenas escritas por el usuario mediante prompt-sync, valida, transforma y garantiza que la información que pasa al núcleo del programa sea estructuralmente correcta.",
-  paradigmas: {
+  "descripcion": "El controlador de entrada. Este módulo opera como interfaz entre el usuario y el sistema. Valida, transforma y asegura que los datos ingresados sean correctos antes de llegar al núcleo del programa.",
+  "paradigmas": {
 
     // -------------------------------------------------------------------------
     // PARADIGMA ESTRUCTURADA
     // -------------------------------------------------------------------------
-    estructurada: {
-      titulo: "Captura Imperativa",
-      pasos: [
+    "estructurada": {
+      "titulo": "Captura Imperativa",
+      "pasos": [
         {
-          id: 1,
-          titulo: "Solicitud en Secuencia Determinada",
-          descripcion:
-            "El usuario completa una serie de pasos uno tras otro. El programa se detiene en cada input hasta recibir una respuesta válida. Esto refleja el paradigma imperativo clásico donde el flujo es lineal.",
-          codigo: `export const solicitarPropsCreacion = () => {
-                  console.clear();
-                  console.log("-- Crear nueva tarea --");
+          "id": 1,
+          "titulo": "Solicitud en Secuencia Determinada",
+          "descripcion":
+            "El sistema ejecuta una sucesión estricta de pasos. El programa se detiene hasta recibir datos válidos. Refleja el modelo clásico imperativo/estructurado.",
+          "codigo": "export const solicitarPropsCreacion = () => {\n  console.clear();\n  console.log(\"-- Crear nueva tarea --\");\n\n  const titulo = _solicitarStringNoVacio(\"Título: \");\n  const descripcion = _solicitarStringOpcional(\"Descripción: \");\n  const dificultad = solicitarDificultad(\"Dificultad: \");\n  const vencimiento = solicitarVencimiento(\"Vencimiento (AAAA-MM-DD): \");\n\n  return { titulo, descripcion, dificultad, vencimiento };\n};",
+          "salida": `-- Crear nueva tarea --
+Título: estudiar para el final
+Descripción: 
+Dificultad: 1
+(1) Fácil | (2) Media | (3) Difícil
+Vencimiento (AAAA-MM-DD): 2025-12-01
 
-                  const titulo = _solicitarStringNoVacio("Título: ");
-                  const descripcion = _solicitarStringOpcional("Descripción: ");
-                  const dificultad = solicitarDificultad("Dificultad: ");
-                  const vencimiento = solicitarVencimiento("Vencimiento (AAAA-MM-DD): ");
-
-                  return { titulo, descripcion, dificultad, vencimiento };
-                };`
+>> Resultado final devuelto:
+{
+  titulo: "estudiar para el final",
+  descripcion: "",
+  dificultad: "Facil",
+  vencimiento: "2025-12-01"
+}`
         },
         {
-          id: 2,
-          titulo: "Estructuras de Control",
-          descripcion:
-            "Aparecen bucles claros (`while`, `do/while`) y condiciones (`if`, `switch`) que definen el flujo exacto del programa y evitan entradas inválidas.",
-          codigo: `let valor;
-                    do {
-                      valor = prompt("Ingrese título: ");
-                      if (!valor.trim()) {
-                        console.log("❌ No puede estar vacío.");
-                      }
-                    } while (!valor.trim());`
+          "id": 2,
+          "titulo": "Estructuras de Control",
+          "descripcion":
+            "Se usan bucles (`while`) y condiciones (`if`). El flujo estructurado impide que el sistema siga adelante sin una entrada válida.",
+          "codigo": "let valor;\ndo {\n  valor = prompt(\"Ingrese título: \");\n  if (!valor.trim()) {\n    console.log(\"❌ No puede estar vacío.\");\n  }\n} while (!valor.trim());",
+          "salida": `Ingrese título: 
+❌ No puede estar vacío.
+Ingrese título: 
+❌ No puede estar vacío.
+Ingrese título: estudiar logica
+>> valor final aceptado: "estudiar logica"`
         }
       ]
     },
@@ -561,31 +564,31 @@ export const projectContent = {
     // -------------------------------------------------------------------------
     // PARADIGMA ORIENTADO A OBJETOS
     // -------------------------------------------------------------------------
-    objetos: {
-      titulo: "Wrappers, Helpers y Colaboración con Modelos",
-      pasos: [
+    "objetos": {
+      "titulo": "Wrappers, Helpers y Colaboración con Modelos",
+      "pasos": [
         {
-          id: 1,
-          titulo: "Encapsulación de la Biblioteca Externa",
-          descripcion:
-            "La librería prompt-sync no se usa directamente en el flujo principal. Se encapsula dentro de helpers privados como `_solicitarStringNoVacio`, asegurando que el resto del sistema no dependa de la librería.",
-          codigo: `import promptSync from 'prompt-sync';
-                    const prompt = promptSync({ sigint: true });
-
-                    // Nadie fuera de este módulo conoce 'prompt':
-                    export const _solicitarStringOpcional = (msg) => prompt(msg);`
+          "id": 1,
+          "titulo": "Encapsulación de la Biblioteca Externa",
+          "descripcion":
+            "prompt-sync se esconde detrás de helpers privados. Ningún módulo externo sabe que prompt-sync existe; solo interactúan con funciones declaradas.",
+          "codigo": "import promptSync from 'prompt-sync';\nconst prompt = promptSync({ sigint: true });\n\nexport const _solicitarStringOpcional = (msg) => prompt(msg);",
+          "salida": `Descripción: estudiar arrays
+>> _solicitarStringOpcional retorna: "estudiar arrays"`
         },
         {
-          id: 2,
-          titulo: "Colaboración con el Objeto Tarea",
-          descripcion:
-            "Las funciones leen o actualizan propiedades de un objeto `Tarea`. La lógica de negocio queda dentro de la clase, mientras que ManejoInput solo recolecta datos. Esto divide responsabilidades.",
-          codigo: `// solicitud de modificación
-                    export const solicitarPropsModificacion = (tarea) => {
-                      const nuevoTitulo = prompt(\`Título [\${tarea.titulo}]: \`);
-                      if (nuevoTitulo) tarea.titulo = nuevoTitulo;
-                      return tarea;
-                    };`
+          "id": 2,
+          "titulo": "Colaboración con el Objeto Tarea",
+          "descripcion":
+            "Las funciones operan sobre instancias de clases. ManejoInput no gestiona lógica de negocio: solo dialoga con el objeto.",
+          "codigo": "export const solicitarPropsModificacion = (tarea) => {\n  const nuevoTitulo = prompt(`Título [${tarea.titulo}]: `);\n  if (nuevoTitulo) tarea.titulo = nuevoTitulo;\n  return tarea;\n};",
+          "salida": `Título [estudiar para el final]: estudiar para el final con walter
+>> tarea modificada:
+{
+  id: "a1b2...",
+  titulo: "estudiar para el final con walter",
+  ...
+}`
         }
       ]
     },
@@ -593,43 +596,46 @@ export const projectContent = {
     // -------------------------------------------------------------------------
     // PARADIGMA FUNCIONAL
     // -------------------------------------------------------------------------
-    funcional: {
-      titulo: "Entrada como Transformación Pura",
-      pasos: [
+    "funcional": {
+      "titulo": "Entrada como Transformación Pura",
+      "pasos": [
         {
-          id: 1,
-          titulo: "Uso de Find/Filter para Selección",
-          descripcion:
-            "Se aplican funciones de orden superior como `find`, la cual recibe un predicado y retorna el primer elemento coincidente. No se alteran las listas.",
-          codigo: `export const seleccionarTareaDeLista = (lista, accion) => {
-                    const termino = prompt("Buscar: ");
-                    return lista.find(t => t.titulo.toLowerCase().includes(termino.toLowerCase()));
-                  };`
+          "id": 1,
+          "titulo": "Uso de Find/Filter para Selección",
+          "descripcion":
+            "La selección se hace sin mutar la lista original. Se ejecuta find() sobre listas de tareas sin alterar el resto del estado.",
+          "codigo": "export const seleccionarTareaDeLista = (lista, accion) => {\n  const termino = prompt(\"Buscar: \");\n  return lista.find(t => t.titulo.toLowerCase().includes(termino.toLowerCase()));\n};",
+          "salida": `Buscar: final
+>> Resultado encontrado:
+{ id: "a1b2...", titulo: "estudiar para el final", ... }`
         },
         {
-          id: 2,
-          titulo: "Funciones como Validadores",
-          descripcion:
-            "Cada función de solicitud actúa como una transformación pura: recibe un input crudo y devuelve un valor validado, o null/undefined si falla.",
-          codigo: `const esFechaValida = (str) => /^\d{4}-\d{2}-\d{2}$/.test(str);
+          "id": 2,
+          "titulo": "Funciones como Validadores",
+          "descripcion":
+            "El input se procesa como función pura: se transforma, se valida y se decide si es aceptable.",
+          "codigo": "const esFechaValida = (str) => /^\\d{4}-\\d{2}-\\d{2}$/.test(str);\n\nexport const solicitarVencimiento = () => {\n  const input = prompt(\"Fecha: \");\n  return esFechaValida(input) ? new Date(input) : undefined;\n};",
+          "salida": `Fecha: 2025-13-10
+>> salida: undefined (fecha inválida)
 
-                    export const solicitarVencimiento = () => {
-                      const input = prompt("Fecha: ");
-                      return esFechaValida(input) ? new Date(input) : undefined;
-                    };`
+Fecha: 2025-12-01
+>> salida: new Date("2025-12-01T00:00:00.000Z")`
         },
         {
-          id: 3,
-          titulo: "Separación entre I/O e Inmutabilidad",
-          descripcion:
-            "Aunque prompt es una operación impura, la función retorna siempre datos nuevos sin modificar estructuras externas. Esto acerca este módulo a un estilo funcional parcialmente puro.",
-          codigo: `export const solicitarPropsCreacion = () => {
-                      return {
-                        titulo: _solicitarStringNoVacio("Título: "),
-                        descripcion: _solicitarStringOpcional("Descripción: "),
-                        dificultad: solicitarDificultad("Dificultad: ")
-                      };
-                    };`
+          "id": 3,
+          "titulo": "Separación entre I/O e Inmutabilidad",
+          "descripcion":
+            "Aunque prompt es impuro, la función devuelve siempre un nuevo objeto. No modifica estructuras ya existentes.",
+          "codigo": "export const solicitarPropsCreacion = () => ({\n  titulo: _solicitarStringNoVacio(\"Título: \"),\n  descripcion: _solicitarStringOpcional(\"Descripción: \"),\n  dificultad: solicitarDificultad(\"Dificultad: \")\n});",
+          "salida": `Título: repasar SQL
+Descripción: indices y joins
+Dificultad: 2
+>> Resultado:
+{
+  titulo: "repasar SQL",
+  descripcion: "indices y joins",
+  dificultad: "Media"
+}`
         }
       ]
     },
@@ -637,63 +643,39 @@ export const projectContent = {
     // -------------------------------------------------------------------------
     // PARADIGMA LÓGICO
     // -------------------------------------------------------------------------
-    logica: {
-      titulo: "Validación y Reglas Formales",
-      pasos: [
+    "logica": {
+      "titulo": "Validación y Reglas Formales",
+      "pasos": [
         {
-          id: 1,
-          titulo: "Predicados de Entrada",
-          descripcion:
-            "Cada verificación es una regla del tipo: 'la entrada es válida si se cumple P'. Este paradigma se basa en lógica de predicados: evaluar verdadero/falso.",
-          codigo: `if (valor.length > max) {
-                      console.log("❌ Error: demasiado largo");
-                      continue;
-                    }`
+          "id": 1,
+          "titulo": "Predicados de Entrada",
+          "descripcion":
+            "Toda validación es un predicado lógico: cumple P o no cumple P. No existen estados intermedios.",
+          "codigo": "if (valor.length > max) {\n  console.log(\"❌ Error: demasiado largo\");\n  continue;\n}",
+          "salida": `Ingrese título: estudiar estructuras para el parcial final de fundamentos de programación I
+❌ Error: demasiado largo
+Ingrese título: estudiar estructuras
+>> aceptado`
         },
         {
-          id: 2,
-          titulo: "Consistencia Temporal",
-          descripcion:
-            "Para las fechas se aplican reglas lógicas (no puede ser pasada, debe cumplir formato, debe ser real).",
-          codigo: `if (fechaInput < hoy) {
-                      console.log("❌ No puede ser pasada");
-                      continue;
-}`
+          "id": 2,
+          "titulo": "Consistencia Temporal",
+          "descripcion":
+            "Las reglas lógicas impiden fechas imposibles: pasadas, fuera de rango o con formato inválido.",
+          "codigo": "if (fechaInput < hoy) {\n  console.log(\"❌ No puede ser pasada\");\n  continue;\n}",
+          "salida": `Vencimiento: 2024-01-01
+❌ No puede ser pasada
+Vencimiento: 2025-12-01
+>> fecha válida`
         },
         {
-          id: 3,
-          titulo: "Normalización Semántica",
-          descripcion:
-            "Los inputs se transforman a una versión estándar antes de entrar al sistema (trim, lowercase, default values).",
-          codigo: `const termino = prompt("Buscar: ").trim().toLowerCase();`
-        }
-      ]
-    },
-
-    // -------------------------------------------------------------------------
-    // PARADIGMA REACTIVO / UX (EXTRA)
-    // -------------------------------------------------------------------------
-    reactivo: {
-      titulo: "Feedback Inmediato",
-      pasos: [
-        {
-          id: 1,
-          titulo: "Mensajes de Error en Tiempo Real",
-          descripcion:
-            "Si el usuario ingresa algo inválido, el programa no continúa. Vuelve a pedir el dato inmediatamente y explica qué salió mal.",
-          codigo: `if (!regexFecha.test(fechaStr)) {
-                      console.log("❌ Formato AAAA-MM-DD requerido.");
-                      continue;
-                    }`
-        },
-        {
-          id: 2,
-          titulo: "Confirmaciones y Cancelaciones",
-          descripcion:
-            "La tecla Enter o Ctrl+C permiten abortar una acción completa. Esto le da al usuario un control suave sobre el flujo.",
-          codigo: `if (input === null || input === '') {
-                      return undefined; // Cancelar / omitir
-                    }`
+          "id": 3,
+          "titulo": "Normalización Semántica",
+          "descripcion":
+            "El input se transforma a una forma estándar para que los módulos posteriores trabajen sin ambigüedades.",
+          "codigo": "const termino = prompt(\"Buscar: \").trim().toLowerCase();",
+          "salida": `Buscar:   Final EXAMEN   
+>> termino procesado: "final examen"`
         }
       ]
     }

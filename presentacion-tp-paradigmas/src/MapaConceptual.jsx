@@ -56,7 +56,7 @@ export default function MapaConceptual({ onSelectFile }) {
         <div className="inline-flex items-center gap-3 mb-2 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-200">
           <FolderTree className="text-blue-600" size={24} />
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Arquitectura del Sistema
+            Arquitectura del Sistema Final PDP Nolasco Triberti
           </h1>
         </div>
         <p className="text-slate-500 mt-4">Selecciona un archivo para ver sus detalles y paradigmas</p>
